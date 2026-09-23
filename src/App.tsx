@@ -77,9 +77,7 @@ export default function App() {
   return (
     <div className="grid h-dvh grid-rows-[auto_minmax(0,1fr)_auto] bg-[var(--bg)] text-[var(--fg)]">
       <header className="z-10 flex items-center gap-4 border-b border-[var(--line)] bg-black px-6 py-3 text-white">
-        <img src={asset("brand/africa-creative.png")} alt="Africa Creative" className="h-8 bg-black px-2" />
-        <p className="text-sm text-white/70">apresenta</p>
-        <p className="font-bold">A Lente Humana</p>
+        <p className="font-bold">Masterclass Cinematografia: A Lente Humana</p>
         <div className="ml-auto">
           <button
             type="button"
@@ -93,23 +91,24 @@ export default function App() {
 
       <main aria-live="polite" className="relative min-h-0 overflow-hidden">
         {slide.kind === "hero" ? (
-          <section className="relative h-full bg-black">
+          <section className="grid h-full grid-rows-2 bg-black">
             <video
               ref={videoRef}
-              className="h-full w-full object-cover"
+              className="h-full min-h-0 w-full object-cover"
               src={asset("reel.mp4")}
               autoPlay
               loop
               playsInline
               poster={asset("concepts/p004-d081ae1ea1.jpg")}
             />
-            <div className="absolute inset-x-0 bottom-0 bg-black px-8 py-6 text-white md:px-14">
+            <div className="flex min-h-0 flex-col justify-center overflow-auto px-8 py-6 text-white md:px-10">
               <p className="text-sm uppercase text-[var(--accent)]">Reel · trilha original</p>
-              <h1 className="mt-2 text-5xl font-bold leading-none md:text-7xl">Thiago Beck</h1>
-              <p className="mt-3 max-w-3xl text-xl text-white/80">
-                Diretor de fotografia. Masterclass de 60 minutos. O workshop com câmera vem depois.
+              <h1 className="mt-2 text-3xl font-bold leading-none">Thiago Beck</h1>
+              <p className="mt-3 text-lg text-white/80">MasterClass Cinematografia - A Lente Humana</p>
+              <p className="mt-3 text-white/80">
+                “A criação da imagem deve ocorrer independentemente da câmera. Durante a leitura do argumento ou roteiro, uma narrativa visual deve se desenvolver, composta por fotogramas. A imagem é um dos alicerces que acompanham e sustentam a trama.”
               </p>
-              <button type="button" className="mt-4 border border-white px-4 py-2 font-bold" onClick={enableSound}>
+              <button type="button" className="mt-4 w-fit border border-white px-4 py-2 font-bold" onClick={enableSound}>
                 {soundOff ? "Ligar trilha" : "Trilha ligada"}
               </button>
             </div>
@@ -118,9 +117,11 @@ export default function App() {
           <section className="grid h-full min-h-0 md:grid-cols-[minmax(280px,42%)_1fr]">
             <div className="min-h-0 overflow-auto px-6 py-6 md:px-10 md:py-8">
               <p className="text-sm uppercase text-[var(--accent)]">
-                {slide.kicker} · {slide.time}
+                {slide.time ? `${slide.kicker} · ${slide.time}` : slide.kicker}
               </p>
-              <h1 className="mt-3 text-4xl font-bold leading-none text-balance md:text-6xl">{slide.title}</h1>
+              <h1 className={`mt-3 font-bold leading-tight text-balance ${slide.id === "beck" ? "text-3xl md:text-4xl" : "text-2xl md:text-4xl"}`}>
+                {slide.title}
+              </h1>
               <Copy slideId={slide.id} />
             </div>
             <Figure slideId={slide.id} frame={frame} title={slide.title} />
@@ -165,7 +166,7 @@ function Copy({ slideId }: { slideId: string }) {
       {slide.paragraphs && (
         <div className="mt-6 grid max-w-xl gap-3">
           {slide.paragraphs.map((paragraph) => (
-            <p key={paragraph} className="text-pretty text-[var(--muted)]">
+            <p key={paragraph} className="text-pretty text-xl leading-snug text-[var(--fg)] md:text-2xl">
               {paragraph}
             </p>
           ))}
@@ -194,12 +195,25 @@ function Copy({ slideId }: { slideId: string }) {
         </div>
       )}
       {slide.people && (
-        <div className="mt-6 grid gap-3">
+        <div className="mt-6 grid gap-4">
           {slide.people.map((person) => (
-            <article key={person.name} className="border border-[var(--line)] p-4">
-              <p className="text-sm text-[var(--accent)]">{person.role}</p>
-              <h2 className="mt-1 text-2xl font-bold">{person.name}</h2>
-              <p className="mt-1 text-[var(--muted)]">{person.work}</p>
+            <article key={person.name} className="border border-[var(--line)]">
+              {person.poster ? (
+                <img src={asset(person.poster)} alt="" className="aspect-video w-full object-cover" />
+              ) : null}
+              <div className="p-4">
+                <p className="text-sm text-[var(--accent)]">{person.role}</p>
+                <h2 className="mt-1 text-2xl font-bold">{person.name}</h2>
+                <p className="mt-1 text-[var(--muted)]">{person.work}</p>
+                <div className="mt-3 flex flex-wrap gap-2">
+                  <a href={person.filmUrl} target="_blank" rel="noreferrer" className="border border-[var(--fg)] px-3 py-2 text-sm font-bold">
+                    Filme
+                  </a>
+                  <a href={person.profileUrl} target="_blank" rel="noreferrer" className="border border-[var(--line)] px-3 py-2 text-sm font-bold">
+                    Perfil
+                  </a>
+                </div>
+              </div>
             </article>
           ))}
         </div>
